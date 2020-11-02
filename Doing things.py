@@ -1,35 +1,27 @@
-# -*- coding: utf-8 -*-
+# Simple script to demonstrate how to use the environment as a black box.
 
+# Import the environment
 import envV2 as ENV
-import numpy as np
-import gc
-from pympler import muppy, summary
-import objgraph
 
-from keras.utils import plot_model
-
-crashes_arr = np.zeros(5)
-
-
+#Load the environment, it has a number of variables that can be initailized.
+#Here we just set the movement speed of the drone and drone size radius.
 env = ENV.sonarEnv(speed=0.5,dronesize=0.1)
-crashes = 0
-for i in range(100):
-    a = env.step(0)
-    env.render_for_nips(i)
-    if a[2]:
-        crashes = crashes+1
-        env.reset()
-    print(i)
-    
-    
-    # all_objects = muppy.get_objects()
-    # sum1 = summary.summarize(all_objects)
-    # summary.print_(sum1)
-    
-    # plot_model(env.gan.generator,to_file=str(i)+'__gen.png',show_shapes=True)
-    # plot_model(env.gan.generator_model,to_file=str(i)+'__gen_model.png',show_shapes=True)
-            
-# crashes_arr[int(ds*5)-1] = crashes
-env.close()
 
-print(crashes_arr)
+
+# This loop just moves forward for 100 steps, if the drone crashes we reset.
+for i in range(100):
+    
+    # Step function has the action as input: 0 - forward, 1 - backwards, 2 - turn left, 3 - turn right
+    # It returns a vector of the state, the reward, the `finished' boolean
+    a = env.step(0)
+    
+    # Render will plot the state as a curve, and also plots a top down plot of the trees
+    env.render(i)
+    
+    # If `finished' we reset
+    if a[2]:
+        env.reset()
+    
+
+# Frees some memory when finished with the environment
+env.close()
