@@ -30,6 +30,9 @@ batch_n = 48
 
 
 
+# This is the generator from the GAN stripped down for efficiency. 
+# It can make the network and load the weights from a weights file.
+
 class ARGAN():
     def __init__(self):
         self.latent_dim = 50
